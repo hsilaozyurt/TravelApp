@@ -1,38 +1,47 @@
 // App.js
 
-// React Native'ın temel bileşenlerini import ediyoruz.
 import React from 'react';
-import { Text, View } from 'react-native';
-
-// React Navigation'ın ana container'ını import ediyoruz.
-// Uygulamadaki tüm navigasyon işlemleri bu container içinde gerçekleşir.
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// Bu, uygulamamızın başlangıç (root) bileşenidir.
+// Az önce oluşturduğumuz ekran bileşenlerini import ediyoruz.
+import HomeScreen from './screens/HomeScreen';
+import DetailsScreen from './screens/DetailsScreen';
+
+// Stack navigator'ı oluşturuyoruz.
+// Stack, içindeki Screen'leri yönetip başlık, geri butonu gibi özellikleri sağlar.
+const Stack = createNativeStackNavigator();
+
 export default function App() {
   return (
-    // NavigationContainer:
-    // - Tüm navigasyon yapısını saran "beyin" gibi düşünebiliriz.
-    // - İçine Stack, Tab, Drawer vb. bütün navigator bileşenleri yerleşecek.
     <NavigationContainer>
       {/* 
-        View:
-        - Ekranın ortasında "Navigation Ready!" yazısını göstermek için
-          basit bir container kullanıyoruz.
-        - flex: 1 → Ekranın tamamını kapla
-        - justifyContent: 'center' → dikeyde ortala
-        - alignItems: 'center' → yatayda ortala
+        Stack.Navigator:
+        - initialRouteName ile açılışta hangi ekranın gösterileceğini belirliyoruz.
       */}
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        {/* Şimdilik sadece navigation'ın çalıştığını test etmek için text */}
-        <Text>Navigation Ready!</Text>
-      </View>
+      <Stack.Navigator initialRouteName="Home">
+        {/* 
+          Home ekranı:
+          - name: Ekranın route adı (navigation.navigate('Home') vs.)
+          - component: Gösterilecek React bileşeni
+          - options: Header başlığı gibi ekstra ayarlar
+        */}
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ title: 'TravelApp Home' }}
+        />
+
+        {/* 
+          Details ekranı:
+          - HomeScreen'den navigation.navigate('Details') ile buraya geliyoruz.
+        */}
+        <Stack.Screen
+          name="Details"
+          component={DetailsScreen}
+          options={{ title: 'Details' }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
