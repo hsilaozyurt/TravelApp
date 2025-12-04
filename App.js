@@ -5,30 +5,32 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-// Ekran bileşenlerimiz
+// Ekranlar
 import HomeScreen from './screens/HomeScreen';
 import DetailsScreen from './screens/DetailsScreen';
-import ExploreScreen from './screens/ExploreScreen';
-import ProfileScreen from './screens/ProfileScreen';
+import SettingsScreen from './screens/SettingsScreen';
 
-// Stack ve Tab navigator'larını oluşturuyoruz.
+// Stack ve Tab navigator'ları oluşturuyoruz.
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 /*
   HomeStack:
-  - Sadece Home sekmesi için geçerli olan stack yapısı.
-  - HomeScreen ve DetailsScreen bu stack içinde.
-  - Böylece tab bar altta kalırken Home → Details arasında ileri/geri gidebiliyoruz.
+  - Explore tab'i içinde kullanacağımız stack yapısı.
+  - HomeScreen ve DetailsScreen burada tanımlı.
+  - Böylece Explore sekmesindeyken Home → Details → Back yapabiliyoruz.
 */
 function HomeStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="Home">
+      {/* Ana ekran: destinasyon listesi / butonlar vs. */}
       <Stack.Screen
-        name="HomeMain"
+        name="Home"
         component={HomeScreen}
-        options={{ title: 'TravelApp Home' }} // header başlığı
+        options={{ title: 'Explore Destinations' }}
       />
+
+      {/* Detay ekranı: route paramları ile gelen bilgileri gösteriyor */}
       <Stack.Screen
         name="Details"
         component={DetailsScreen}
@@ -38,43 +40,37 @@ function HomeStack() {
   );
 }
 
-// Uygulamanın ana bileşeni:
+// Uygulamanın root bileşeni
 export default function App() {
   return (
     <NavigationContainer>
       {/*
         Tab.Navigator:
-        - Ekranın alt kısmındaki sekmeleri yönetir.
-        - Her Tab.Screen bir sekme (Home, Explore, Profile).
+        - Ekranın altındaki sekmeleri yönetiyor.
+        - headerShown: false diyerek Tab seviyesindeki başlığı gizliyoruz,
+          böylece sadece Stack'in header'ı görünüyor (çifte header olmaz).
       */}
       <Tab.Navigator
         screenOptions={{
-          headerShown: false, // Tab içindeki stack kendi header'ını yönetecek
+          headerShown: false,
         }}
       >
         {/* 
-          Home sekmesi:
-          - component olarak HomeStack veriyoruz (içinde HomeMain + Details var).
-          - Tab başlığını "Home" olarak gösteriyoruz.
+          Explore tab'i:
+          - component olarak HomeStack veriyoruz.
+          - Kullanıcı "Explore" sekmesine tıklayınca aslında HomeStack açılıyor.
         */}
         <Tab.Screen
-          name="HomeTab"
-          component={HomeStack}
-          options={{ title: 'Home' }}
-        />
-
-        {/* Explore sekmesi: doğrudan ExploreScreen */}
-        <Tab.Screen
           name="Explore"
-          component={ExploreScreen}
+          component={HomeStack}
           options={{ title: 'Explore' }}
         />
 
-        {/* Profile sekmesi: doğrudan ProfileScreen */}
+        {/* Settings tab'i: doğrudan SettingsScreen gösteriliyor */}
         <Tab.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{ title: 'Profile' }}
+          name="Settings"
+          component={SettingsScreen}
+          options={{ title: 'Settings' }}
         />
       </Tab.Navigator>
     </NavigationContainer>
